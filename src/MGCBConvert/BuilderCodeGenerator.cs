@@ -4,13 +4,11 @@ namespace MGCBConvert;
 
 public class BuilderCodeGenerator
 {
-    private readonly string _namespace;
     private readonly StringBuilder _sb = new();
     private int _indentLevel = 0;
 
-    public BuilderCodeGenerator(string namespaceName)
+    public BuilderCodeGenerator()
     {
-        _namespace = namespaceName;
     }
 
     public string Generate(MGCBGlobalConfig config, List<ContentGroup> groups)
@@ -25,10 +23,6 @@ public class BuilderCodeGenerator
         AppendLine();
 
         GenerateUsings();
-
-        AppendLine($"namespace {_namespace};");
-        AppendLine();
-
         GenerateMainMethod();
         GenerateBuilderClass(groups);
 
@@ -46,24 +40,44 @@ public class BuilderCodeGenerator
 
     private void GenerateMainMethod()
     {
-        AppendLine("// Console program entry point");
-        AppendLine("public class Program");
+        AppendLine("/// <summary>");
+        AppendLine("/// Entry point for the Content Builder project,");
+        AppendLine("/// which when executed will build content according to the \"Content Collection Strategy\" defined in the Builder class.");
+        AppendLine("/// </summary>");
+        AppendLine("/// <remarks>");
+        AppendLine("/// Make sure to validate the directory paths in the \"ContentBuilderParams\" for your specific project.");
+        AppendLine("/// For more details regarding the Content Builder, see the MonoGame documentation: <tbc.>");
+        AppendLine("/// </remarks>");
+        AppendLine();
+
+        AppendLine("var contentCollectionArgs = new ContentBuilderParams()");
         AppendLine("{");
         _indentLevel++;
-        
-        AppendLine("public static int Main(string[] args)");
+        AppendLine("Mode = ContentBuilderMode.Builder,");
+        AppendLine("WorkingDirectory = $\"{AppContext.BaseDirectory}../../../\", // path to where your content folder can be located");
+        AppendLine("SourceDirectory = \"Assets\", // Not actually needed as this is the default, but added for reference");
+        AppendLine("Platform = TargetPlatform.DesktopGL");
+        _indentLevel--;
+        AppendLine("};");
+
+        AppendLine("var builder = new Builder();");
+        AppendLine();
+
+        AppendLine("if (args is not null && args.Length > 0)");
         AppendLine("{");
         _indentLevel++;
-        
-        AppendLine("Builder builder = new Builder();");
         AppendLine("builder.Run(args);");
+        _indentLevel--;
+        AppendLine("}");
+        AppendLine("else");
+        AppendLine("{");
+        _indentLevel++;
+        AppendLine("builder.Run(contentCollectionArgs);");
+        _indentLevel--;
+        AppendLine("}");
+        AppendLine();
+
         AppendLine("return builder.FailedToBuild > 0 ? -1 : 0;");
-        
-        _indentLevel--;
-        AppendLine("}");
-        
-        _indentLevel--;
-        AppendLine("}");
         AppendLine();
     }
 
@@ -108,7 +122,7 @@ public class BuilderCodeGenerator
 
             value.Add(group);
         }
-        
+
         bool needsRootChange = byContentRoot.Count > 1;
 
         foreach (var contentGroup in byContentRoot)
@@ -122,7 +136,7 @@ public class BuilderCodeGenerator
 
             List<ContentGroup> copyGroups = new List<ContentGroup>();
             List<ContentGroup> buildGroups = new List<ContentGroup>();
-            
+
             foreach (ContentGroup group in contentGroup.Value)
             {
                 if (group.IsCopyAction)
@@ -284,7 +298,7 @@ public class BuilderCodeGenerator
         if (value.Contains(',') && value.Split(',').Length == 4)
         {
             string[] parts = value.Split(',');
-            
+
             bool allPartsAreByte = true;
             for (int i = 0; i < parts.Length; i++)
             {
@@ -294,7 +308,7 @@ public class BuilderCodeGenerator
                     break;
                 }
             }
-            
+
             if (allPartsAreByte)
             {
                 string trimmedParts = "";
@@ -316,21 +330,21 @@ public class BuilderCodeGenerator
         // Enum
         if (IsValidIdentifier(value))
         {
-            string[] knownEnums = 
-            [ 
-                "Color", 
-                "Compressed", 
-                "DxtCompressed", 
-                "Dxt5Compressed", 
-                "NoAlpha", 
-                "PvrCompressed", 
-                "Etc1Compressed", 
+            string[] knownEnums =
+            [
+                "Color",
+                "Compressed",
+                "DxtCompressed",
+                "Dxt5Compressed",
+                "NoAlpha",
+                "PvrCompressed",
+                "Etc1Compressed",
                 "AtcCompressed",
-                "Best", 
-                "Low", 
-                "Auto" 
+                "Best",
+                "Low",
+                "Auto"
             ];
-            
+
             bool isKnownEnum = false;
             for (int i = 0; i < knownEnums.Length; i++)
             {
@@ -340,7 +354,7 @@ public class BuilderCodeGenerator
                     break;
                 }
             }
-            
+
             if (isKnownEnum)
             {
                 if (paramName == "TextureFormat")

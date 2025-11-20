@@ -10,7 +10,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>mgcb-convert</ToolCommandName>
     <PackageId>AristurtleDev.Tools.MGCBConvert</PackageId>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>Christopher Whitley</Authors>
     <Company>Christopher Whitley</Company>
     <Description>Migration tool to convert legacy .mgcb files to the new MonoGame Content Builder format</Description>

@@ -17,12 +17,6 @@ Option<FileInfo> outputOption = new Option<FileInfo>(
     getDefaultValue: () => new FileInfo("Builder.cs"));
 outputOption.AddAlias("-o");
 
-Option<string> namespaceOption = new Option<string>(
-    name: "--namespace",
-    description: "Namespace for the generated Builder class",
-    getDefaultValue: () => "MyGame.Content");
-namespaceOption.AddAlias("-n");
-
 Option<bool> optimizeOption = new Option<bool>(
     name: "--optimize",
     description: "Enable pattern optimization to group similar content items",
@@ -36,11 +30,10 @@ verboseOption.AddAlias("-v");
 
 rootCommand.AddOption(inputOption);
 rootCommand.AddOption(outputOption);
-rootCommand.AddOption(namespaceOption);
 rootCommand.AddOption(optimizeOption);
 rootCommand.AddOption(verboseOption);
 
-rootCommand.SetHandler(async (inputFile, outputFile, namespaceName, optimize, verbose) =>
+rootCommand.SetHandler(async (inputFile, outputFile, optimize, verbose) =>
 {
     try
     {
@@ -50,12 +43,12 @@ rootCommand.SetHandler(async (inputFile, outputFile, namespaceName, optimize, ve
             OptimizePatterns = optimize
         };
 
-        await migrator.MigrateAsync(inputFile, outputFile, namespaceName);
-        
+        await migrator.MigrateAsync(inputFile, outputFile);
+
         Console.WriteLine($"✓ Successfully generated {outputFile.FullName}");
         Console.WriteLine($"  Found {migrator.Statistics.TotalItems} content items");
         Console.WriteLine($"  Generated {migrator.Statistics.GeneratedRules} content rules");
-        
+
         if (optimize && migrator.Statistics.OptimizedItems > 0)
         {
             Console.WriteLine($"  Optimized {migrator.Statistics.OptimizedItems} items into patterns");
@@ -70,6 +63,6 @@ rootCommand.SetHandler(async (inputFile, outputFile, namespaceName, optimize, ve
         }
         Environment.Exit(1);
     }
-}, inputOption, outputOption, namespaceOption, optimizeOption, verboseOption);
+}, inputOption, outputOption, optimizeOption, verboseOption);
 
 return await rootCommand.InvokeAsync(args);

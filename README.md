@@ -41,7 +41,6 @@ mgcb-convert -i Content.mgcb -o Builder.cs
 
 - `-i, --input <file>` - Path to the Content.mgcb file (required)
 - `-o, --output <file>` - Output Builder.cs file path (default: Builder.cs)
-- `-n, --namespace <name>` - Namespace for the generated class (default: MyGame.Content)
 - `--optimize` - Enable pattern optimization (default: true)
 - `-v, --verbose` - Enable verbose logging
 

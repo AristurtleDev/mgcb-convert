@@ -5,7 +5,7 @@ public class MGCBMigrator
     public bool OptimizePatterns { get; set; } = true;
     public MigrationStatistics Statistics { get; } = new MigrationStatistics();
 
-    public async Task MigrateAsync(FileInfo inputFile, FileInfo outputFile, string namespaceName)
+    public async Task MigrateAsync(FileInfo inputFile, FileInfo outputFile)
     {
         if (!inputFile.Exists)
         {
@@ -19,7 +19,7 @@ public class MGCBMigrator
         Logger.LogVerbose($"Found {Statistics.TotalItems} content items");
 
         // Analyze and group content items
-        List<ContentGroup> groups = OptimizePatterns 
+        List<ContentGroup> groups = OptimizePatterns
                                     ? PatternAnalyzer.AnalyzeAndGroup(mgcbFile.ContentItems)
                                     : CreateIndividualGroups(mgcbFile.ContentItems);
 
@@ -37,7 +37,7 @@ public class MGCBMigrator
 
         Logger.LogVerbose($"Generating {groups.Count} content rules...");
 
-        BuilderCodeGenerator generator = new BuilderCodeGenerator(namespaceName);
+        BuilderCodeGenerator generator = new BuilderCodeGenerator();
         string code = generator.Generate(mgcbFile.GlobalConfig, groups);
 
         if (outputFile.Directory != null && !outputFile.Directory.Exists)
@@ -51,7 +51,7 @@ public class MGCBMigrator
     private List<ContentGroup> CreateIndividualGroups(List<MGCBContentItem> items)
     {
         List<ContentGroup> groups = new List<ContentGroup>();
-        
+
         for (int i = 0; i < items.Count; i++)
         {
             MGCBContentItem item = items[i];
@@ -67,7 +67,7 @@ public class MGCBMigrator
             };
             groups.Add(group);
         }
-        
+
         return groups;
     }
 }
