@@ -2,9 +2,8 @@
 
 **MGCBConvert** is a command-line tool that automates the migration process from the legacy MonoGame Content Builder (MGCB) format to the new Content Builder system.
 
-[![NuGet](https://img.shields.io/nuget/v/Aristurtle.Tools.MGCBConvert?color=blue&style=flat-square)](https://www.nuget.org/packages/AristurtleDev.Tools.MGCBConvert/0.0.2)
+[![NuGet 0.0.2](https://img.shields.io/nuget/v/AristurtleDev.Tools.MGCBConvert?color=blue&style=flat-square)](https://www.nuget.org/packages/AristurtleDev.Tools.MGCBConvert)
 [![License: MIT](https://img.shields.io/badge/📃%20license-MIT-blue?style=flat)](LICENSE)
-
 ## Features
 
 - **Multi-Format Support**: Handles all standard MonoGame content types (textures, fonts, audio, models, effects)
